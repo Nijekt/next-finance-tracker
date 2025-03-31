@@ -10,39 +10,19 @@ import ExpenseItem from "@/components/ExpenseItem";
 import IncomeModal from "@/components/modals/IncomeModal";
 import ExpensesModal from "@/components/modals/ExpensesModal";
 
+import { AuthContext } from "@/lib/context/auth-context";
+import SignIn from "@/components/SignIn";
+
 ChartJS.register(ArcElement, Tooltip, Legend);
-// const DUMMY_DATA = [
-//   {
-//     id: 1,
-//     title: "Entertaiment",
-//     amount: 1000,
-//     color: "yellow",
-//   },
-//   {
-//     id: 2,
-//     title: "Business",
-//     amount: 222,
-//     color: "brown",
-//   },
-//   {
-//     id: 3,
-//     title: "Gass",
-//     amount: 2000,
-//     color: "black",
-//   },
-//   {
-//     id: 4,
-//     title: "School",
-//     amount: 3000,
-//     color: "purple",
-//   },
-// ];
+
 export default function Home() {
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [showAddExpensesModal, setShowAddExpensesModal] = useState(false);
   const { expenses, income } = useContext(FinanceContext);
 
   const [balance, setBalance] = useState(0);
+
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const newBalance =
@@ -51,6 +31,10 @@ export default function Home() {
 
     setBalance(newBalance);
   }, [expenses, income]);
+
+  if (!user) {
+    return <SignIn />;
+  }
 
   return (
     <>
@@ -93,7 +77,9 @@ export default function Home() {
         </section>
 
         <section className="py-6">
-          <h3 className="text-2xl">Stats</h3>
+          <h3 className="text-2xl" id="stats">
+            Stats
+          </h3>
           <div className="w-1/2 mx-auto">
             <Doughnut
               className="w-[100px] h-[100px]"

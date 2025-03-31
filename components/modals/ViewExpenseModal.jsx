@@ -3,6 +3,7 @@ import Modal from "../Modal";
 import { currencyFormatter } from "@/lib/utils";
 import { FinanceContext } from "@/lib/context/finance-context";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const ViewExpenseModal = ({ isOpen, setIsOpen, expense }) => {
   const { deleteExpense, deleteExpenseCategory } = useContext(FinanceContext);
@@ -10,8 +11,10 @@ const ViewExpenseModal = ({ isOpen, setIsOpen, expense }) => {
   const deleteExpenseCategoryHandler = async () => {
     try {
       await deleteExpenseCategory(expense.id);
+      toast.success("Expense category deleted successfully");
     } catch (error) {
       console.log(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -24,8 +27,10 @@ const ViewExpenseModal = ({ isOpen, setIsOpen, expense }) => {
       };
 
       await deleteExpense(updatedExpense, expense.id);
+      toast.success("Expense deleted successfully");
     } catch (error) {
       console.log(error.message);
+      toast.error(error.message);
     }
   };
   return (

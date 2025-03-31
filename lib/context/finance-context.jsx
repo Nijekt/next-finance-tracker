@@ -1,5 +1,6 @@
 "use client";
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
+import { AuthContext } from "./auth-context";
 
 import {
   collection,
@@ -8,6 +9,8 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -25,12 +28,19 @@ export const FinanceContext = createContext({
 const FinanceContextProvider = ({ children }) => {
   const [income, setIncome] = useState([]);
   const [expenses, setExpenses] = useState([]);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
+    if (!user) return;
     (async () => {
-      const queryIcnomeSnapshot = await getDocs(collection(db, "income"));
+      const incomeQuery = query(
+        collection(db, "income"),
+        where("uid", "==", user.uid)
+      );
 
-      const data = queryIcnomeSnapshot.docs.map((doc) => ({
+      const docIcnomeSnapshot = await getDocs(incomeQuery);
+
+      const data = docIcnomeSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: new Date(doc.data()?.createdAt?.toDate()),
@@ -38,16 +48,21 @@ const FinanceContextProvider = ({ children }) => {
 
       setIncome(data);
 
-      const queryExpensesSnapshot = await getDocs(collection(db, "expenses"));
+      const expenseQuery = query(
+        collection(db, "expenses"),
+        where("uid", "==", user.uid)
+      );
 
-      const dataExpenses = queryExpensesSnapshot.docs.map((doc) => ({
+      const docExpensesSnapshot = await getDocs(expenseQuery);
+
+      const dataExpenses = docExpensesSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
       setExpenses(dataExpenses);
     })();
-  }, []);
+  }, [user]);
 
   const deleteExpenseCategory = async (id) => {
     try {
@@ -56,9 +71,7 @@ const FinanceContextProvider = ({ children }) => {
       await deleteDoc(docRef);
 
       setExpenses((prev) => {
-        const updatedExpenses = prev.filter((expense) => {
-          expense.id !== id;
-        });
+        const updatedExpenses = prev.filter((expense) => expense.id !== id);
         return [...updatedExpenses];
       });
     } catch (error) {
@@ -90,12 +103,16 @@ const FinanceContextProvider = ({ children }) => {
   const addCategory = async (category) => {
     try {
       const docSnap = await addDoc(collection(db, "expenses"), {
+        uid: user.uid,
         ...category,
         items: [],
       });
 
       setExpenses((prev) => {
-        return [...prev, { id: docSnap.id, items: [], ...category }];
+        return [
+          ...prev,
+          { id: docSnap.id, uid: user.uid, items: [], ...category },
+        ];
       });
     } catch (error) {
       throw error;

@@ -2,6 +2,7 @@ import React, { useState, useContext, useRef } from "react";
 import { FinanceContext } from "@/lib/context/finance-context";
 import { v4 as uuidv4 } from "uuid";
 import Modal from "../Modal";
+import { toast } from "react-toastify";
 
 const ExpensesModal = ({ showAddExpensesModal, setShowAddExpensesModal }) => {
   const [expenseAmount, setExpenseAmount] = useState("");
@@ -37,8 +38,10 @@ const ExpensesModal = ({ showAddExpensesModal, setShowAddExpensesModal }) => {
       setExpenseAmount("");
       setSelectedCategory(null);
       setShowAddExpensesModal();
+      toast.success("Expense added successfully");
     } catch (error) {
       console.log(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -47,9 +50,12 @@ const ExpensesModal = ({ showAddExpensesModal, setShowAddExpensesModal }) => {
     const color = colorRef.current.value;
 
     try {
-      addCategory({ title, color, total: 0 });
+      await addCategory({ title, color, total: 0 });
+      setShowAddExpense(false);
+      toast.success("Category added successfully");
     } catch (error) {
       console.log(error.message);
+      toast.error(error.message);
     }
   };
 

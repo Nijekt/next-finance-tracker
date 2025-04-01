@@ -74,26 +74,27 @@ const IncomeModal = ({ showAddIncomeModal, setShowAddIncomeModal }) => {
       </form>
       <div className="flex flex-col gap-4 mt-6">
         <h3 className="text-2xl font-bold">Income History</h3>
-
-        {income.map((item) => (
-          <div className="flex items-center justify-between" key={item.id}>
-            <div>
-              <p className="font-semibold">{item.description}</p>
-              <div className="text-xs">{item.createdAt.toISOString()}</div>
+        <div className="flex flex-col gap-2 pr-2 max-h-60 max-sm:max-h-100 overflow-y-auto overflow-x-hidden custom-scrollbar">
+          {income.map((item) => (
+            <div className="flex items-center justify-between" key={item.id}>
+              <div>
+                <p className="font-semibold">{item.description}</p>
+                <div className="text-xs">{item.createdAt.toISOString()}</div>
+              </div>
+              <p className="flex items-center gap-2">
+                {currencyFormatter(item.amount)}
+                <button
+                  onClick={() => {
+                    deleteIncomeHandler(item.id);
+                  }}
+                >
+                  {" "}
+                  <FaRegTrashAlt />
+                </button>
+              </p>
             </div>
-            <p className="flex items-center gap-2">
-              {currencyFormatter(item.amount)}
-              <button
-                onClick={() => {
-                  deleteIncomeHandler(item.id);
-                }}
-              >
-                {" "}
-                <FaRegTrashAlt />
-              </button>
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </Modal>
   );

@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
+import { toast } from "react-toastify";
+
 import Modal from "../Modal";
+
 import { currencyFormatter } from "@/lib/utils";
 import { FinanceContext } from "@/lib/context/finance-context";
+
 import { FaRegTrashAlt } from "react-icons/fa";
-import { toast } from "react-toastify";
 
 const ViewExpenseModal = ({ isOpen, setIsOpen, expense }) => {
   const { deleteExpense, deleteExpenseCategory } = useContext(FinanceContext);
@@ -47,24 +50,26 @@ const ViewExpenseModal = ({ isOpen, setIsOpen, expense }) => {
 
       <div>
         <h3 className="my-4 text-2xl">Expense History</h3>
-        {expense.items.map((item) => {
-          return (
-            <div key={item.id} className="flex items-center justify-between">
-              <div>
-                {item.createdAt?.toMillis
-                  ? new Date(item.createdAt.toMillis()).toISOString()
-                  : item.createdAt.toISOString()}
-              </div>
+        <div className="flex flex-col gap-2 pr-2 max-h-110 overflow-y-auto overflow-x-hidden custom-scrollbar">
+          {expense.items.map((item) => {
+            return (
+              <div key={item.id} className="flex items-center justify-between">
+                <div>
+                  {item.createdAt?.toMillis
+                    ? new Date(item.createdAt.toMillis()).toISOString()
+                    : item.createdAt.toISOString()}
+                </div>
 
-              <p className="flex items-center gap-2">
-                {currencyFormatter(item.amount)}
-                <button onClick={() => deleteExpenseHandler(item)}>
-                  <FaRegTrashAlt />
-                </button>
-              </p>
-            </div>
-          );
-        })}
+                <p className="flex items-center gap-2">
+                  {currencyFormatter(item.amount)}
+                  <button onClick={() => deleteExpenseHandler(item)}>
+                    <FaRegTrashAlt />
+                  </button>
+                </p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </Modal>
   );

@@ -1,6 +1,8 @@
 "use client";
 import React, { useContext } from "react";
+
 import { AuthContext } from "@/lib/context/auth-context";
+
 import { FcGoogle } from "react-icons/fc";
 
 const SignIn = () => {

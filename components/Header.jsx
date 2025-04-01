@@ -1,6 +1,8 @@
 "use client";
+import React, { useContext } from "react";
+
 import { AuthContext } from "@/lib/context/auth-context";
-import React, { use, useContext } from "react";
+
 import { IoMdStats } from "react-icons/io";
 
 const Header = () => {

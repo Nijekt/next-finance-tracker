@@ -1,8 +1,9 @@
 import React, { useState, useContext, useRef } from "react";
-import { FinanceContext } from "@/lib/context/finance-context";
-import { v4 as uuidv4 } from "uuid";
-import Modal from "../Modal";
 import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
+
+import Modal from "../Modal";
+import { FinanceContext } from "@/lib/context/finance-context";
 
 const ExpensesModal = ({ showAddExpensesModal, setShowAddExpensesModal }) => {
   const [expenseAmount, setExpenseAmount] = useState("");
@@ -106,28 +107,30 @@ const ExpensesModal = ({ showAddExpensesModal, setShowAddExpensesModal }) => {
               </button>
             </div>
           )}
-
-          {expenses.map((expense) => (
-            <button
-              key={expense.id}
-              onClick={() => setSelectedCategory(expense.id)}
-            >
-              <div
-                style={{
-                  boxShadow: expense.id === selectedCategory && "1px 1px 4px",
-                }}
-                className="flex items-center justify-between px-4 py-4 bg-slate-700 rounded-3xl"
+          <div className="flex flex-col gap-2 pr-2 max-h-85  overflow-y-auto overflow-x-hidden scrollbar-hidden ">
+            {expenses.map((expense) => (
+              <button
+                key={expense.id}
+                onClick={() => setSelectedCategory(expense.id)}
+                className="btn-category"
               >
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-[25px] h-[25px] rounded-full"
-                    style={{ backgroundColor: expense.color }}
-                  />
-                  <h4>{expense.title} </h4>
+                <div
+                  style={{
+                    boxShadow: expense.id === selectedCategory && "1px 1px 4px",
+                  }}
+                  className="flex items-center justify-between px-4 py-4 bg-slate-700 rounded-3xl"
+                >
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-[25px] h-[25px] rounded-full"
+                      style={{ backgroundColor: expense.color }}
+                    />
+                    <h4>{expense.title} </h4>
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 

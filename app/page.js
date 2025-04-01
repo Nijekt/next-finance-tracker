@@ -1,17 +1,16 @@
 "use client";
 import { useState, useContext, useEffect } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
-
-import { currencyFormatter } from "@/lib/utils";
-import { FinanceContext } from "@/lib/context/finance-context";
-import ExpenseItem from "@/components/ExpenseItem";
 
 import IncomeModal from "@/components/modals/IncomeModal";
 import ExpensesModal from "@/components/modals/ExpensesModal";
-
-import { AuthContext } from "@/lib/context/auth-context";
 import SignIn from "@/components/SignIn";
+import Stats from "@/components/Stats";
+import MyExpenses from "@/components/MyExpenses";
+
+import { currencyFormatter } from "@/lib/utils";
+import { FinanceContext } from "@/lib/context/finance-context";
+import { AuthContext } from "@/lib/context/auth-context";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -66,38 +65,9 @@ export default function Home() {
             + Income
           </button>
         </section>
+        <MyExpenses expenses={expenses} />
 
-        <section className="py-6">
-          <h3 className="text-2xl">My Expenses</h3>
-          <div className="flex flex-col gap-3 mt-6">
-            {expenses.map((item) => (
-              <ExpenseItem key={item.id} expense={item} />
-            ))}
-          </div>
-        </section>
-
-        <section className="py-6">
-          <h3 className="text-2xl" id="stats">
-            Stats
-          </h3>
-          <div className="w-1/2 mx-auto">
-            <Doughnut
-              className="w-[100px] h-[100px]"
-              data={{
-                labels: expenses.map((item) => item.title),
-                datasets: [
-                  {
-                    label: "Expenses",
-                    data: expenses.map((item) => item.total),
-                    backgroundColor: expenses.map((item) => item.color),
-                    borderColor: ["#18181b"],
-                    borderWidth: 2,
-                  },
-                ],
-              }}
-            />
-          </div>
-        </section>
+        <Stats expenses={expenses} />
       </main>
     </>
   );
